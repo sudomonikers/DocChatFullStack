@@ -1,0 +1,1 @@
+To start the api in dev mode: uvicorn main:app --reload
