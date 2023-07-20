@@ -1,0 +1,15 @@
+.env
+
+#ui things
+ui/.DS_Store
+ui/node_modules
+ui/build
+ui/.svelte-kit
+ui/package
+ui/vite.config.js.timestamp-*
+ui/vite.config.ts.timestamp-*
+ui/src/node_modules
+
+#backend things
+
+#infrastructure things
