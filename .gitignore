@@ -13,3 +13,5 @@ ui/src/node_modules
 #backend things
 
 #infrastructure things
+infrastructure/.terraform
+infrastructure/.terraform.lock.hcl

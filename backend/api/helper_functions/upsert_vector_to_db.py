@@ -20,16 +20,16 @@ elif hasIndex[0] != index_name:
 index = pinecone.Index(index_name)
 
 
-def format_vectors(vectors: List[np.ndarray], doc_title: str):
-    formatted_vectors = []
-    for vector in vectors:
-        formatted_vectors.append((doc_title, vector, {"doc_title": doc_title}))
+def format_vectors(vectors: List[np.ndarray], split_text: List[str], doc_title: str):
+    formatted_vectors = []    
+    for [i,vector] in enumerate(vectors):
+        formatted_vectors.append((f'{i}-{doc_title}', vector, {"doc_title": doc_title, "text": split_text[i]}))
     return formatted_vectors
 
-def upsert_vectors(vectors: List[np.ndarray], doc_title: str) -> bool:
-    formatted_vectors = format_vectors(vectors, doc_title)
+def upsert_vectors(vectors: List[np.ndarray], split_text: List[str], doc_title: str) -> bool:
+    formatted_vectors = format_vectors(vectors, split_text, doc_title)
     upsert_response = index.upsert(
         vectors=formatted_vectors,
-        namespace="example-namespace"
+        namespace=os.getenv("PINECONE_DOCS_NAMESPACE")
     )
     return upsert_response.status_code == 200
