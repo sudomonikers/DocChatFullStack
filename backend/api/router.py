@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from helper_functions.save_file_to_disk import save_file_to_disk
 from helper_functions.create_embeddings import get_vector_embeddings
 from helper_functions.upsert_vector_to_db import upsert_vectors, index
-from helper_functions.upload_to_s3 import upload_to_aws
+from helper_functions.upload_to_s3 import upload_file_to_aws
 
 router = APIRouter()
 
@@ -24,7 +24,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         
         embeddings = get_vector_embeddings(split_text) 
         upsert_vectors(embeddings, split_text, file.filename)        
-        upload_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
+        upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
         
         os.remove(file_path)  # Clean up the temporary file
         return {"message": f"Successfully Processed the file {file.filename}"}
