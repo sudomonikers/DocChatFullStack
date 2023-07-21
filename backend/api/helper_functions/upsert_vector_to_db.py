@@ -26,10 +26,10 @@ def format_vectors(vectors: List[np.ndarray], doc_title: str):
         formatted_vectors.append((doc_title, vector, {"doc_title": doc_title}))
     return formatted_vectors
 
-def upsert_vectors(vectors: List[np.ndarray], doc_title: str):
+def upsert_vectors(vectors: List[np.ndarray], doc_title: str) -> bool:
     formatted_vectors = format_vectors(vectors, doc_title)
     upsert_response = index.upsert(
         vectors=formatted_vectors,
         namespace="example-namespace"
     )
-    print(upsert_response)
+    return upsert_response.status_code == 200
