@@ -1,2 +1,4 @@
 textract 
 fastapi 
+sentence-transformers
+pinecone-client

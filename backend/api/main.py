@@ -36,7 +36,7 @@ app.add_middleware(
 async def root():
     return {"message": "OK"}
 
-app.include_router(api_router, prefix="/auth", tags=["Auth"])
+app.include_router(api_router, prefix="", tags=["Auth"])
 
 #lambda handler
 handler = Mangum(app)
