@@ -32,11 +32,11 @@ variable "acl_value" {
     default = "private"
 }
 variable "aws_access_key" {
-default = "AKIASD5ZCJRHLVU6RZGO"
+default = ""
 }
 
 variable "aws_secret_key" {
-default = "fANYYxHNH0UC6EXhYKJ4ljW59IqceZHCcNL99/nG"
+default = ""
  }
 
 variable "region" {
