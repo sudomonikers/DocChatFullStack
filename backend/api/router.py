@@ -14,7 +14,6 @@ from helper_functions.get_file_from_s3 import download_file_from_s3
 router = APIRouter()
 
 
-#create a fastapi route that accepts a file of any type and then uses the textrace python package to parese it for text
 @router.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
     try:
@@ -64,6 +63,7 @@ async def get_document(doc_title: str) -> Optional[bytes]:
         
         response = Response(content=file_contents, media_type=media_type)
         response.headers["Content-Disposition"] = f"attachment; filename={doc_title.split('/')[-1]}"
+        
         os.remove(f'temp_files/{doc_title}')  # Clean up the temporary file
         return response
     except Exception as e:
