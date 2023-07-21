@@ -11,4 +11,5 @@ def save_file_to_disk(file: UploadFile) -> str:
     with open(file_path, "wb") as f:
         f.write(file.file.read())
 
-    return file_path
+    return os.path.abspath(file_path)
+
