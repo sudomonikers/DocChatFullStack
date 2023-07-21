@@ -32,13 +32,13 @@ variable "acl_value" {
     default = "private"
 }
 variable "aws_access_key" {
-default = ""
+  default = ""
 }
 
 variable "aws_secret_key" {
-default = ""
+  default = ""
  }
 
 variable "region" {
-    default = "us-east-2"
+  default = "us-east-2"
 }
