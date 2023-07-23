@@ -11,6 +11,8 @@ ui/vite.config.ts.timestamp-*
 ui/src/node_modules
 
 #backend things
+backend/api/temp_files/**/*
+OP-backend/api/temp_files/**/*
 
 #infrastructure things
 infrastructure/.terraform

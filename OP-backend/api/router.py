@@ -10,20 +10,20 @@ from helper_functions.create_embeddings import get_vector_embeddings
 from helper_functions.upsert_vector_to_db import upsert_vectors, index
 from helper_functions.upload_to_s3 import upload_file_to_aws
 from helper_functions.get_file_from_s3 import download_file_from_s3
+from helper_functions.get_unique_documents_from_query import get_unique_doc_titles
 
 router = APIRouter()
-
 
 @router.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
     try:
         file_path = save_file_to_disk(file)
         text = textract.process(file_path)
-        decoded_text = text.decode("utf-8")
+        decoded_text = text.decode("utf-8").replace("\n", " ")
         split_text = sent_tokenize(decoded_text)
-        split_text = list(map(lambda x: x.replace("\n", " "), split_text))
         
-        embeddings = get_vector_embeddings(split_text) 
+        embeddings = get_vector_embeddings(split_text)
+         
         upsert_vectors(embeddings, split_text, file.filename)        
         upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
         
@@ -42,11 +42,16 @@ async def chat(message: ChatMessage):
         message_embedding = get_vector_embeddings([message.message])
         query_response = index.query(
             vector=message_embedding[0], 
-            top_k=5, 
+            top_k=3, 
             include_metadata=True,
             namespace=os.getenv("PINECONE_DOCS_NAMESPACE")
         )
-        print(query_response)
+        doc_titles = get_unique_doc_titles(query_response)
+        for doc_title in doc_titles:
+            download_file_from_s3(os.getenv("S3_BUCKET"), doc_title, f'temp_files/{doc_title}')
+        
+        
+        print(doc_titles)
         return {"message": "OK"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")

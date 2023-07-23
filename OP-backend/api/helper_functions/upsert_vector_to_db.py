@@ -3,19 +3,19 @@ import os
 from typing import List
 import numpy as np
 
-
 api_key = os.getenv("PINECONE_API_KEY")
 environment = os.getenv("PINECONE_API_ENV")
 index_name = os.getenv("PINECONE_INDEX_NAME")
+vector_dimensionality = int(os.getenv("PINECONE_VECTOR_DIMENSIONALITY"))
 
 pinecone.init(api_key=api_key, environment=environment)
 
 hasIndex = pinecone.list_indexes()
 if not hasIndex:
-    pinecone.create_index(index_name, dimension=768, metric="cosine", pod_type="p1")
+    pinecone.create_index(index_name, dimension=vector_dimensionality, metric="cosine", pod_type="p1")
 elif hasIndex[0] != index_name:
     pinecone.delete_index(hasIndex[0])
-    pinecone.create_index(index_name, dimension=768, metric="cosine", pod_type="p1")
+    pinecone.create_index(index_name, dimension=vector_dimensionality, metric="cosine", pod_type="p1")
 
 index = pinecone.Index(index_name)
 
