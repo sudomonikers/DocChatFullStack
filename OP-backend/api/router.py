@@ -1,58 +1,58 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException, Response
 import textract
 import os
-from nltk.tokenize import sent_tokenize
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List, Dict
 
 from helper_functions.save_file_to_disk import save_file_to_disk
-from helper_functions.create_embeddings import get_vector_embeddings
+from helper_functions.create_embeddings import get_openai_embeddings
 from helper_functions.upsert_vector_to_db import upsert_vectors, index
 from helper_functions.upload_to_s3 import upload_file_to_aws
 from helper_functions.get_file_from_s3 import download_file_from_s3
-from helper_functions.get_unique_documents_from_query import get_unique_doc_titles
+from helper_functions.text_splitter import split_into_overlapping_chunks
+from helper_functions.chat import chat_over_docs
 
 router = APIRouter()
 
 @router.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
-    try:
-        file_path = save_file_to_disk(file)
-        text = textract.process(file_path)
-        decoded_text = text.decode("utf-8").replace("\n", " ")
-        split_text = sent_tokenize(decoded_text)
+    file_path = save_file_to_disk(file)
+    text = textract.process(file_path)
+    
+    decoded_text = text.decode("utf-8")
+    split_text = split_into_overlapping_chunks(decoded_text)
+    embeddings = get_openai_embeddings(split_text)
+    
+    upsert_vectors(embeddings, split_text, file.filename)        
+    upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
+    
+    os.remove(file_path)  # Clean up the temporary file
+    return {"message": f"Successfully Processed the file {file.filename}"}
+    # try:
+    #     file_path = save_file_to_disk(file)
+    #     text = textract.process(file_path)
         
-        embeddings = get_vector_embeddings(split_text)
-         
-        upsert_vectors(embeddings, split_text, file.filename)        
-        upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
+    #     decoded_text = text.decode("utf-8").replace("\n", " ")
+    #     split_text = CharacterTextSplitter(chunk_size=200, chunk_overlap=40).split_documents(decoded_text)
+    #     embeddings = get_openai_embeddings(split_text)
         
-        os.remove(file_path)  # Clean up the temporary file
-        return {"message": f"Successfully Processed the file {file.filename}"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+    #     upsert_vectors(embeddings, split_text, file.filename)        
+    #     upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
+        
+    #     os.remove(file_path)  # Clean up the temporary file
+    #     return {"message": f"Successfully Processed the file {file.filename}"}
+    # except Exception as e:
+    #     raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
     
 class ChatMessage(BaseModel):
-    message: str
-    history: str
+    query: str
+    history: List[Dict[str, str]] = []
 @router.post("/chat")
-async def chat(message: ChatMessage):
+async def chat(message: ChatMessage) -> List[Dict[str, str]]:
     try:
-        message_embedding = get_vector_embeddings([message.message])
-        query_response = index.query(
-            vector=message_embedding[0], 
-            top_k=3, 
-            include_metadata=True,
-            namespace=os.getenv("PINECONE_DOCS_NAMESPACE")
-        )
-        doc_titles = get_unique_doc_titles(query_response)
-        for doc_title in doc_titles:
-            download_file_from_s3(os.getenv("S3_BUCKET"), doc_title, f'temp_files/{doc_title}')
-        
-        
-        print(doc_titles)
-        return {"message": "OK"}
+        updated_conversation = chat_over_docs(query=message.query, history=message.history)
+        return updated_conversation
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 

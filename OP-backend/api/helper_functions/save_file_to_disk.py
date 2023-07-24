@@ -13,3 +13,6 @@ def save_file_to_disk(file: UploadFile) -> str:
 
     return os.path.abspath(file_path)
 
+if __name__ == "__main__":
+    #example usage
+    save_file_to_disk(UploadFile("test.pdf"))
