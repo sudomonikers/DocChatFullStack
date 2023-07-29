@@ -11,6 +11,7 @@ from helper_functions.upload_to_s3 import upload_file_to_aws
 from helper_functions.get_file_from_s3 import download_file_from_s3
 from helper_functions.text_splitter import split_into_overlapping_chunks
 from helper_functions.chat import chat_over_docs
+from helper_functions.get_all_unique_document_titles import get_unique_document_titles
 
 router = APIRouter()
 
@@ -56,6 +57,14 @@ async def get_document(doc_title: str) -> Optional[bytes]:
         response.headers["Content-Disposition"] = f"attachment; filename={doc_title.split('/')[-1]}"
         
         os.remove(f'temp_files/{doc_title}')  # Clean up the temporary file
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
+    
+@router.get("/all-document-titles")
+async def get_all_document_titles() -> List[str]:
+    try:
+        response = get_unique_document_titles()
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")

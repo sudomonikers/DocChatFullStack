@@ -18,6 +18,5 @@ def split_into_overlapping_chunks(input_string, chunk_length=200, overlap_size=4
     return chunks
 
 if __name__ == "__main__":
-    print('hello')
     #example usage
     print(split_into_overlapping_chunks("lorem ipsum dolor sit amet, \n\nconsectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."))

@@ -40,7 +40,12 @@ def format_vectors(vectors: List[List[float]], split_text: List[str], doc_title:
 def upsert_vectors(vectors: List[List[float]], split_text: List[str], doc_title: str) -> bool:
     formatted_vectors_batches = format_vectors(vectors, split_text, doc_title, 100)
     success = True
-
+    
+    #insert the doc title into another namespace
+    title_vector = get_openai_embeddings([doc_title])
+    formatted_title_vector = format_vectors(title_vector, [doc_title], doc_title, 1)[0]
+    index.upsert(vectors=formatted_title_vector, namespace=os.getenv("PINECONE_TITLES_NAMESPACE"))
+    
     for batch_vectors in formatted_vectors_batches:
         upsert_response = index.upsert(
             vectors=batch_vectors,
@@ -53,5 +58,8 @@ def upsert_vectors(vectors: List[List[float]], split_text: List[str], doc_title:
 
 
 if __name__ == "__main__":
+    from create_embeddings import get_openai_embeddings
     #example usage
     print(upsert_vectors([[1,2,3]], ["test"], "test"))
+else: 
+    from .create_embeddings import get_openai_embeddings
