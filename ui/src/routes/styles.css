@@ -6,7 +6,7 @@
 	--font-mono: 'Fira Mono', monospace;
 	--color-bg-0: #646464;
 	--color-bg-1: aquamarine;
-	--color-bg-2: hsl(224, 44%, 95%);
+	--color-bg-2: #F9FBFF;
 	--color-theme-1: #545454;
 	--color-theme-2: #F9FBFF;
 	--color-theme-3: aquamarine;
@@ -21,7 +21,7 @@ body {
 	min-height: 100vh;
 	margin: 0;
 	background-attachment: fixed;
-	background-color: var(--color-bg-1);
+	background-color: var(--color-bg-0);
 	background-size: 100vw 100vh;
 	background-image: radial-gradient(
 			50% 50% at 50% 50%,

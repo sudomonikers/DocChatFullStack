@@ -4,7 +4,7 @@
 	import '../../../routes/styles.css';
 
 	//we need to store the display messages separately from the history
-	let messages = [];
+	let messages = [{ content: 'Hello! How can I help you?', role: 'assistant' }];
 	let history = [];
 	let newMessage = '';
 	let messageInFlight = false;
@@ -61,7 +61,7 @@
 				body: JSON.stringify({
 					query: messageText,
 					document: data.file,
-					history: history.length > 0 ? history : messages
+					history: history.length > 1 ? history : messages
 				})
 			});
 			const stream = response.body;
@@ -88,21 +88,28 @@
 			console.error('Error while sending message:', error);
 		}
 	}
+
+    function handleKeyDown(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+        sendMessage();
+        }
+    }
 </script>
+
 <h1>Chatting With <button class="download-button" on:click={getFile}>{data.file}</button></h1>
 <div class="chatbox">
 	<div class="message-box">
 		{#each messages as message}
 			<div class="message">
-				<span>{message.role}</span>
-				<span>{message.content}</span>
+				<span class="{message.role}">{message.role}</span>
+				<span class="{message.role}">{message.content}</span>
 			</div>
 			<hr />
 		{/each}
-		{#if true}
+		{#if messageInFlight}
 			<div class="message">
-				<span>assistant</span>
-				<div class="dots"></div>
+				<span class="assistant">assistant</span>
+				<div class="dots" />
 			</div>
 		{/if}
 	</div>
@@ -112,6 +119,7 @@
 			placeholder="Type your message..."
 			rows="3"
 			on:input={adjustTextareaRows}
+            on:keydown={handleKeyDown}
 		/>
 		<button disabled={messageInFlight} class="send-button" on:click={sendMessage}>Send</button>
 	</div>
@@ -148,12 +156,22 @@
 		width: 100%;
 		left: 10%;
 		box-sizing: border-box;
+        height: auto;
+        min-height: 90vh;
 	}
 
 	.message {
 		display: flex;
 		align-items: center;
 	}
+
+    .assistant {
+        color: var(--color-theme-3);
+    }
+
+    .user {
+        color: var(--color-theme-2);
+    }
 
 	.message span:first-child {
 		flex-basis: 10%; /* Set the first span to take up 10% of the space */
@@ -200,22 +218,17 @@
 		bottom: 16px;
 		right: 12px;
 		padding: 8px 16px;
-		background-color: #007bff;
-		color: white;
+		background-color: var(--color-theme-3);
+		color: var(--color-theme-1);
 		border: none;
 		border-radius: 4px;
 		cursor: pointer;
+        transition: 700ms;
 	}
 
-	.textarea-container button {
-		margin-left: 8px;
-		padding: 8px 16px;
-		background-color: #007bff;
-		color: white;
-		border: none;
-		border-radius: 4px;
-		cursor: pointer;
-	}
+    .send-button:hover {
+        background-color: var(--color-theme-2);
+    }
 
 	@keyframes changeLetter {
 		0% {
@@ -231,11 +244,8 @@
 			content: '...';
 		}
 	}
-	.dots {
-
-		&:after {
-			animation: changeLetter 4s linear infinite;
-			content: "";
-		}
+	.dots:after {
+		animation: changeLetter 4s linear infinite;
+		content: '';
 	}
 </style>

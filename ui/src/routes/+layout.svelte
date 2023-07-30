@@ -25,7 +25,6 @@
 		fetch(`${BASE_API}/all-document-titles`)
 			.then((response) => response.json())
 			.then((data) => {
-				console.log(data);
 				documents = data;
 			});
 	}
