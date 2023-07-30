@@ -1,14 +1,12 @@
 <script>
 	import './styles.css';
 	import { page } from '$app/stores';
-	import logo from '$lib/images/svelte-logo.svg';
 	import github from '$lib/images/github.svg';
 	import { fly } from 'svelte/transition';
 	import { BASE_API } from '$lib/environment';
 
-
 	let isMenuOpen = false;
-	
+
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
 	}
@@ -22,11 +20,13 @@
 		}
 	}
 
+	let documents = [];
 	function getUploadedDocuments() {
-		fetch(`${BASE_API}/`)
+		fetch(`${BASE_API}/all-document-titles`)
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
+				documents = data;
 			});
 	}
 	getUploadedDocuments();
@@ -43,13 +43,13 @@
 				on:click={toggleMenu}
 				on:keydown={handleMenuKeyPress}
 				on:keyup={handleMenuKeyPress}
-			>				
-				<div></div>
-				<div></div>
-				<div></div>
-			  </div>
+			>
+				<div />
+				<div />
+				<div />
+			</div>
 		</div>
-	
+
 		<nav>
 			<svg viewBox="0 0 2 3" aria-hidden="true">
 				<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
@@ -59,14 +59,14 @@
 					<a href="/">Home</a>
 				</li>
 				<li aria-current={$page.url.pathname === '/upload' ? 'page' : undefined}>
-					<a href="/upload">Chat With Docs</a>
+					<a href="/upload">Upload</a>
 				</li>
 			</ul>
 			<svg viewBox="0 0 2 3" aria-hidden="true">
 				<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
 			</svg>
 		</nav>
-	
+
 		<div class="corner">
 			<a href="https://github.com/sudomonikers/DocChatFullStack" target="_blank">
 				<img src={github} alt="GitHub" />
@@ -78,20 +78,17 @@
 		{#if isMenuOpen}
 			<div>
 				<div class="slideout-menu" transition:fly={{ y: 200, duration: 1000 }}>
-					<ul>
-						<li><a href="/chat-with-file/{'item1'}" on:click={toggleMenu}>Menu Item 1</a></li>
-						<li>Menu Item 2</li>
-						<li>Menu Item 3</li>
-						<li>Menu Item 4</li>
-					</ul>
+					<h1>Chat With Document:</h1>
+					{#each documents as document}
+						<a href="/chat-with-file/{document}" on:click={toggleMenu}>{document}</a>
+					{/each}
 				</div>
 			</div>
 		{/if}
 		<slot />
 	</main>
 
-	<footer>
-	</footer>
+	<footer />
 </div>
 
 <style>
@@ -106,8 +103,6 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		max-width: 64rem;
-		margin: 0 auto;
 		box-sizing: border-box;
 	}
 
@@ -240,13 +235,13 @@
 		z-index: 1000;
 	}
 
-	.slideout-menu ul {
-		list-style: none;
+	.slideout-menu a {
 		padding: 0;
 		margin: 0;
+		display: block;
+		height: auto;
+		padding: 0.5rem 0;
+		display: block;
 	}
 
-	.slideout-menu li {
-		padding: 0.5rem 0;
-	}
 </style>

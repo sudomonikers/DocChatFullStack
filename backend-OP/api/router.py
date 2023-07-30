@@ -3,6 +3,7 @@ import textract
 import os
 from pydantic import BaseModel
 from typing import Optional, List, Dict
+from fastapi.responses import JSONResponse
 
 from helper_functions.save_file_to_disk import save_file_to_disk
 from helper_functions.create_embeddings import get_openai_embeddings
@@ -14,6 +15,7 @@ from helper_functions.chat import chat_over_docs
 from helper_functions.get_all_unique_document_titles import get_unique_document_titles
 
 router = APIRouter()
+
 
 @router.post("/uploadfile/")
 async def create_upload_file(files: UploadFile = File(...)):
@@ -31,16 +33,17 @@ async def create_upload_file(files: UploadFile = File(...)):
     return {"message": f"Successfully Processed the file {files.filename}"}
 
 
-    
 class ChatMessage(BaseModel):
     query: str
+    document: str
     history: List[Dict[str, str]] = []
 @router.post("/chat")
 async def chat(message: ChatMessage) -> List[Dict[str, str]]:
     try:
-        updated_conversation = chat_over_docs(query=message.query, history=message.history)
-        return updated_conversation
+        updated_conversation = chat_over_docs(query=message.query, document=message.document, history=message.history)
+        return JSONResponse(content=updated_conversation)
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
 
 
@@ -61,6 +64,7 @@ async def get_document(doc_title: str) -> Optional[bytes]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
     
+
 @router.get("/all-document-titles")
 async def get_all_document_titles() -> List[str]:
     try:

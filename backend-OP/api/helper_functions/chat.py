@@ -31,14 +31,19 @@ each question. If the information can not be found in the information
 provided by the user you truthfully say "I don't know".
 """
 
-def chat_over_docs(query: str, history: List[Dict[str, str]] = []):
+def chat_over_docs(query: str, document: str, history: List[Dict[str, str]] = []):
     if len(history) == 0:
         history.append({"role": "system", "content": primer})
     #embed the query
     res = get_openai_embeddings(query)
 
     # get relevant contexts (including the questions)
-    res = index.query(vector=res[0], top_k=5, namespace=namespace, include_metadata=True)
+    res = index.query(
+        vector=res[0], 
+        filter={"doc_title": document},
+        top_k=5, 
+        namespace=namespace, 
+        include_metadata=True)
     contexts = [item['metadata']['text'] for item in res['matches']]
     augmented_query = "\n\n---\n\n".join(contexts)+"\n\n-----\n\nUser Query: "+query
     history.append({"role": "user", "content": augmented_query})
