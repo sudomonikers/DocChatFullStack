@@ -18,19 +18,21 @@ router = APIRouter()
 
 
 @router.post("/uploadfile/")
-async def create_upload_file(files: UploadFile = File(...)):
-    file_path = save_file_to_disk(files)
-    text = textract.process(file_path)
-    
-    decoded_text = text.decode("utf-8")
-    split_text = split_into_overlapping_chunks(decoded_text)
-    embeddings = get_openai_embeddings(split_text)
-    
-    upsert_vectors(embeddings, split_text, files.filename)        
-    upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), files.filename)
-    
-    os.remove(file_path)  # Clean up the temporary file
-    return {"message": f"Successfully Processed the file {files.filename}"}
+async def create_upload_file(files: List[UploadFile] = File(...)):
+    responses = []
+
+    for file in files:
+        file_path = save_file_to_disk(file)
+        text = textract.process(file_path)
+        decoded_text = text.decode("utf-8")
+        split_text = split_into_overlapping_chunks(decoded_text)
+        embeddings = get_openai_embeddings(split_text)
+        upsert_vectors(embeddings, split_text, file.filename)
+        upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
+        os.remove(file_path)  # Clean up the temporary file
+        responses.append({"message": f"Successfully processed the file {file.filename}"})
+
+    return responses
 
 
 class ChatMessage(BaseModel):
