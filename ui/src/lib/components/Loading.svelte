@@ -35,9 +35,11 @@
 			{/key}
 		{/if}
 	</div>
-{:else}
-	<slot />
 {/if}
+
+<div class="loading-content" class:loading={loading}>
+	<slot />
+</div>
 
 <style>
 	h1 {
@@ -55,6 +57,14 @@
 		height: 100%;
 		background-color: rgba(0, 0, 0, 0.6);
 		z-index: 9999;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.loading-content {
+		position: relative;
+		z-index: 1;
 	}
 
 	.loading-spinner {
