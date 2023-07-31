@@ -106,3 +106,17 @@ button:focus:not(:focus-visible) {
 	width: 1px;
 	white-space: nowrap;
 }
+
+.button {
+	padding: 8px 16px;
+	background-color: var(--color-theme-3);
+	color: var(--color-theme-1);
+	border: 2px solid var(--color-theme-3);
+	border-radius: 4px;
+	cursor: pointer;
+	transition: 700ms;
+}
+
+.button:hover {
+	background-color: var(--color-theme-2);
+}

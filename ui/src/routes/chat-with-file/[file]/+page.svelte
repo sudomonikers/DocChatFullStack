@@ -220,7 +220,7 @@
 		padding: 8px 16px;
 		background-color: var(--color-theme-3);
 		color: var(--color-theme-1);
-		border: none;
+		border: 2px solid var(--color-theme-3);
 		border-radius: 4px;
 		cursor: pointer;
         transition: 700ms;
