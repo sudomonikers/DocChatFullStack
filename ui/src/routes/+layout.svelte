@@ -4,6 +4,11 @@
 	import github from '$lib/images/github.svg';
 	import { fly } from 'svelte/transition';
 	import { BASE_API } from '$lib/environment';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		getUploadedDocuments();
+	});
 
 	let isMenuOpen = false;
 
@@ -28,26 +33,25 @@
 				documents = data;
 			});
 	}
-	getUploadedDocuments();
 </script>
 
 <div class="app">
 	<header>
 		<div class="corner">
 			<div
-				class="hamburger-menu"
-				role="button"
-				aria-label="Toggle Menu"
-				tabindex="0"
-				on:click={toggleMenu}
-				on:keydown={handleMenuKeyPress}
-				on:keyup={handleMenuKeyPress}
+			  class="hamburger-menu"
+			  role="button"
+			  aria-label="Toggle Menu"
+			  tabindex="0"
+			  on:click={toggleMenu}
+			  on:keydown={handleMenuKeyPress}
+			  on:keyup={handleMenuKeyPress}
 			>
-				<div />
-				<div />
-				<div />
+			  <div class="line top {isMenuOpen ? 'active' : ''}"></div>
+			  <div class="line middle {isMenuOpen ? 'active' : ''}"></div>
+			  <div class="line bottom {isMenuOpen ? 'active' : ''}"></div>
 			</div>
-		</div>
+		  </div>
 
 		<nav>
 			<svg viewBox="0 0 2 3" aria-hidden="true">
@@ -68,7 +72,7 @@
 
 		<div class="corner">
 			<a href="https://github.com/sudomonikers/DocChatFullStack" target="_blank">
-				<img src={github} alt="GitHub" />
+				<img src={github} alt="GitHub" style="height:48px;width:48px;"/>
 			</a>
 		</div>
 	</header>
@@ -209,29 +213,57 @@
 	}
 
 	.hamburger-menu {
-		display: flex;
-		flex-direction: column;
-		cursor: pointer;
-		padding: 8px;
-	}
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    padding: 8px;
+  }
 
-	.hamburger-menu div {
-		width: 25px;
-		height: 3px;
-		background-color: var(--color-theme-2);
-		margin: 4px 0;
-	}
+  .line {
+    width: 25px;
+    height: 3px;
+    background-color: var(--color-theme-2);
+    margin: 4px 0;
+    transition: transform 0.3s ease; /* Add a transition for smooth animation */
+  }
+
+  /* Initial state of the X shape */
+  .line.middle {
+    transform-origin: center;
+    transform: scaleY(1); /* Initially, show the middle line */
+  }
+
+  .line.top.active {
+    transform: translateY(11px) rotate(45deg); /* Rotate the top line to form an X */
+  }
+
+  .line.middle.active {
+    transform: scaleY(0); /* Hide the middle line when active */
+  }
+
+  .line.bottom.active {
+    transform: translateY(-11px) rotate(-45deg); /* Rotate the bottom line to form an X */
+  }
 
 	.slideout-menu {
+		box-sizing: border-box;
 		position: fixed;
-		top: 48px; /* Adjust this based on your header height */
+		top: 15%;
 		bottom: 0;
 		left: 0;
-		width: 250px;
-		background-color: var(--color-bg-2);
-		padding: 1rem;
-		height: 100%;
+		width: 100vw;
+		height: 85%;
+		box-shadow: 0px 20px 50px 30px var(--color-theme-3);
+		overflow-y: scroll;
 		z-index: 1000;
+		text-align: center;
+		background-image: linear-gradient(
+			to top,
+			var(--color-theme-1) 50%, /* Solid color (e.g., blue) for the bottom 80% */
+			75%,
+			var(--color-theme-3) 100%
+
+		);
 	}
 
 	.slideout-menu a {
@@ -241,6 +273,17 @@
 		height: auto;
 		padding: 0.5rem 0;
 		display: block;
+		font-size: 26px;
+		color: var(--color-theme-3);
+	}
+
+	.slideout-menu a:hover {
+		text-decoration: none;
+		color: var(--color-theme-2);
+	}
+
+	.slideout-menu h1 {
+		color: var(--color-theme-2);
 	}
 
 </style>
