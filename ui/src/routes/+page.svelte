@@ -1,58 +1,32 @@
 <script>
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
-</script>
-
-<svelte:head>
+	import Terminal from '$lib/components/Terminal.svelte';
+  </script>
+  
+  <svelte:head>
 	<title>Home</title>
 	<meta name="description" content="Svelte demo app" />
-</svelte:head>
-
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<!-- <Counter /> -->
-</section>
-
-<style>
+  </svelte:head>
+  
+  <style>
+	/* Styles for the parent section */
 	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
+	  width: 100%;
+	  height: calc(100vh - 48px);
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
 	}
-
-	h1 {
-		width: 100%;
+  
+	/* Optional styles for the terminal container */
+	.terminal {
+	  width: 80%; /* Adjust the width of the terminal */
+	  max-width: 800px; /* Set a maximum width for larger screens */
 	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
-</style>
+  </style>
+  
+  <section>
+	<div class="terminal">
+		<Terminal />
+	</div>
+  </section>
+  
