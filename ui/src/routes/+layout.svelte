@@ -3,15 +3,8 @@
 	import { page } from '$app/stores';
 	import github from '$lib/images/github.svg';
 	import { fly } from 'svelte/transition';
-	import { BASE_API } from '$lib/environment';
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		getUploadedDocuments();
-	});
 
 	let isMenuOpen = false;
-
 	function toggleMenu() {
 		isMenuOpen = !isMenuOpen;
 	}
@@ -25,14 +18,7 @@
 		}
 	}
 
-	let documents = [];
-	function getUploadedDocuments() {
-		fetch(`${BASE_API}/all-document-titles`)
-			.then((response) => response.json())
-			.then((data) => {
-				documents = data;
-			});
-	}
+	
 </script>
 
 <div class="app">
@@ -64,6 +50,9 @@
 				<li aria-current={$page.url.pathname === '/upload' ? 'page' : undefined}>
 					<a href="/upload">Upload</a>
 				</li>
+				<li aria-current={$page.url.pathname === '/chat' ? 'page' : undefined}>
+					<a href="/chat-with-file">Chat</a>
+				</li>
 			</ul>
 			<svg viewBox="0 0 2 3" aria-hidden="true">
 				<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
@@ -81,10 +70,7 @@
 		{#if isMenuOpen}
 			<div>
 				<div class="slideout-menu" transition:fly={{ y: 200, duration: 1000 }}>
-					<h1>Chat With Document:</h1>
-					{#each documents as document}
-						<a href="/chat-with-file/{document}" on:click={toggleMenu}>{document}</a>
-					{/each}
+					<h1>About</h1>
 				</div>
 			</div>
 		{/if}
@@ -264,22 +250,6 @@
 			var(--color-theme-3) 100%
 
 		);
-	}
-
-	.slideout-menu a {
-		padding: 0;
-		margin: 0;
-		display: block;
-		height: auto;
-		padding: 0.5rem 0;
-		display: block;
-		font-size: 26px;
-		color: var(--color-theme-3);
-	}
-
-	.slideout-menu a:hover {
-		text-decoration: none;
-		color: var(--color-theme-2);
 	}
 
 	.slideout-menu h1 {
