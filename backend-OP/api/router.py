@@ -13,6 +13,7 @@ from helper_functions.get_file_from_s3 import download_file_from_s3
 from helper_functions.text_splitter import split_into_overlapping_chunks
 from helper_functions.chat import chat_over_docs
 from helper_functions.get_all_unique_document_titles import get_unique_document_titles
+from helper_functions.ui_controller import control_ui
 
 router = APIRouter()
 
@@ -75,3 +76,11 @@ async def get_all_document_titles() -> List[str]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
     
+    
+@router.get("/control-ui")
+async def explain_and_control_ui(query: str) -> str:
+    try:
+        response = control_ui(query)
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")

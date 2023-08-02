@@ -33,6 +33,6 @@
 	<div class="terminal">
 		<Terminal />
 	</div>
-	<p>If you are interested, click the github logo in the top right of the nav to be taken to the repo for this site. While the backend you are currently interacting with is using Openai's gpt-3.5-turbo and Pinecone for a vector databse (the OP stack), I am currently working on getting this working using open source models and vector databases you can host yourself. There are real security concerns (and costs) of using these closed source premium services (not to mention a lack of control over how things will perform).</p>
+	<p>If you are interested, click the github logo in the top right of the nav to be taken to the repo for this site. While the backend you are currently interacting with is using Openai's gpt-3.5-turbo and Pinecone for a vector databse (the OP stack), I am currently working on getting this working using open source models and vector databases you can host yourself. There are real security concerns (and costs) of using these closed source premium services (not to mention a lack of control over how things will perform), and I am sure many people would be interested in using specific models that they fine tune or are more suited to their use case.</p>
   </section>
   
