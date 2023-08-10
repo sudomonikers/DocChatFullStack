@@ -1,5 +1,6 @@
-import openai 
-import os 
+import openai
+import os
+import json 
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
@@ -8,6 +9,11 @@ system_message = """
         1. A 'Home' page that contains a brief description of the website as well as a 'terminal' with which they are querying you.
         2. An 'Upload' page that allows the user to upload a document to the vector database (Pinecone) and to Amazon'as S3 storage service.
         3. A 'Chat' page that allows the user to chat with you, the Q&A bot, over their documents that they have uploaded to the website.
+    
+    You have access to the following functions:
+        1. The first is a function that is actually on the UI, so if you think the user is asking to 'wow' them or show them something awesome, you can use this function to do that.
+           The UI function will display a funny rickroll video.
+        2. The second is a backend function that will perform non-hallucinatory math. This is useful if the user asks you a math question.
     
     Likely questions from the users will be about how this works in the backend, and why this may be useful to them.
     
@@ -37,15 +43,59 @@ system_message = """
         
 """
 
-def control_ui(query: str):
+functions = [
+    {
+        "name": "wowTheUser",
+        "description": "Calling this function will pass a message back to the UI that will display a funny rickroll video.",
+        "parameters": {"type": "object", "properties": {}}
+    },
+    {
+        "name": "math",
+        "description": "Calling this function will perform non-hallucinatory math. It can handle simple addition, subtraction, multiplication, and division of two numbers.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "num1": {
+                    "type": "number",
+                    "description": "The first number to perform math on."
+                },
+                "num2": {
+                    "type": "number",
+                    "description": "The second number to perform math on."
+                },
+                "operator": {
+                    "type": "string",
+                    "description": "The operator to use to perform math on the two numbers. This can be one of the following: '+', '-', '*', '/'"
+                }
+            }
+        }
+    }
+]
+
+
+def control_ui(query: str) -> str:
     answer = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": system_message}, {"role": "user", "content": query}]
+        model="gpt-3.5-turbo-0613",
+        messages=[{"role": "system", "content": system_message},
+                  {"role": "user", "content": query}],
+        functions=functions,
+        function_call="auto"
     )
-    
-    return answer.choices[0].message.content
+
+    if "function_call" in answer.choices[0].message:
+        match answer.choices[0].message.function_call.name:
+            case 'math':
+                parameters = json.loads(answer.choices[0].message.function_call.arguments)
+                return do_basic_math(parameters['num1'], parameters['num2'], parameters['operator'])
+            case 'wowTheUser':
+                return 'wowTheUser'
+    else:
+        return answer.choices[0].message.content
 
 
 if __name__ == "__main__":
-    #example usage
+    from do_basic_math import do_basic_math
+    # example usage
     print(control_ui())
+else:
+    from .do_basic_math import do_basic_math

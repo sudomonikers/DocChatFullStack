@@ -44,7 +44,7 @@ class ChatMessage(BaseModel):
 async def chat(message: ChatMessage) -> List[Dict[str, str]]:
     try:
         updated_conversation = chat_over_docs(query=message.query, document=message.document, history=message.history)
-        return JSONResponse(content=updated_conversation)
+        return JSONResponse(content=updated_conversation, status_code=200)
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
@@ -77,10 +77,12 @@ async def get_all_document_titles() -> List[str]:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")
     
     
-@router.get("/control-ui")
-async def explain_and_control_ui(query: str) -> str:
+class ControlUIQuery(BaseModel):
+    query: str
+@router.post("/control-ui")
+async def explain_and_control_ui(query: ControlUIQuery) -> str:
     try:
-        response = control_ui(query)
-        return response
+        response = control_ui(query.query)
+        return JSONResponse(content={"response": response}, status_code=200)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {e}")

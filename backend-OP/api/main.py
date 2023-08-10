@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator:
     yield
     # Shutdown
     
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, description="This is an api to upload documents, and then interact with them using a chatbot", version="0.0.1")
 origins = [
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",

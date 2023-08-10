@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import github from '$lib/images/github.svg';
 	import { fly } from 'svelte/transition';
+	import Terminal from '$lib/components/Terminal.svelte';
 
 	let isMenuOpen = false;
 	function toggleMenu() {
@@ -17,27 +18,25 @@
 			toggleMenu(!isMenuOpen);
 		}
 	}
-
-	
 </script>
 
 <div class="app">
 	<header>
 		<div class="corner">
 			<div
-			  class="hamburger-menu"
-			  role="button"
-			  aria-label="Toggle Menu"
-			  tabindex="0"
-			  on:click={toggleMenu}
-			  on:keydown={handleMenuKeyPress}
-			  on:keyup={handleMenuKeyPress}
+				class="hamburger-menu"
+				role="button"
+				aria-label="Toggle Menu"
+				tabindex="0"
+				on:click={toggleMenu}
+				on:keydown={handleMenuKeyPress}
+				on:keyup={handleMenuKeyPress}
 			>
-			  <div class="line top {isMenuOpen ? 'active' : ''}"></div>
-			  <div class="line middle {isMenuOpen ? 'active' : ''}"></div>
-			  <div class="line bottom {isMenuOpen ? 'active' : ''}"></div>
+				<div class="line top {isMenuOpen ? 'active' : ''}" />
+				<div class="line middle {isMenuOpen ? 'active' : ''}" />
+				<div class="line bottom {isMenuOpen ? 'active' : ''}" />
 			</div>
-		  </div>
+		</div>
 
 		<nav>
 			<svg viewBox="0 0 2 3" aria-hidden="true">
@@ -61,7 +60,7 @@
 
 		<div class="corner">
 			<a href="https://github.com/sudomonikers/DocChatFullStack" target="_blank">
-				<img src={github} alt="GitHub" style="height:48px;width:48px;"/>
+				<img src={github} alt="GitHub" style="height:48px;width:48px;" />
 			</a>
 		</div>
 	</header>
@@ -70,7 +69,9 @@
 		{#if isMenuOpen}
 			<div>
 				<div class="slideout-menu" transition:fly={{ y: 200, duration: 1000 }}>
-					<h1>About</h1>
+					<div class="terminal">
+						<Terminal />
+					</div>
 				</div>
 			</div>
 		{/if}
@@ -199,37 +200,37 @@
 	}
 
 	.hamburger-menu {
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    padding: 8px;
-  }
+		display: flex;
+		flex-direction: column;
+		cursor: pointer;
+		padding: 8px;
+	}
 
-  .line {
-    width: 25px;
-    height: 3px;
-    background-color: var(--color-theme-2);
-    margin: 4px 0;
-    transition: transform 0.3s ease; /* Add a transition for smooth animation */
-  }
+	.line {
+		width: 25px;
+		height: 3px;
+		background-color: var(--color-theme-2);
+		margin: 4px 0;
+		transition: transform 0.3s ease; /* Add a transition for smooth animation */
+	}
 
-  /* Initial state of the X shape */
-  .line.middle {
-    transform-origin: center;
-    transform: scaleY(1); /* Initially, show the middle line */
-  }
+	/* Initial state of the X shape */
+	.line.middle {
+		transform-origin: center;
+		transform: scaleY(1); /* Initially, show the middle line */
+	}
 
-  .line.top.active {
-    transform: translateY(11px) rotate(45deg); /* Rotate the top line to form an X */
-  }
+	.line.top.active {
+		transform: translateY(11px) rotate(45deg); /* Rotate the top line to form an X */
+	}
 
-  .line.middle.active {
-    transform: scaleY(0); /* Hide the middle line when active */
-  }
+	.line.middle.active {
+		transform: scaleY(0); /* Hide the middle line when active */
+	}
 
-  .line.bottom.active {
-    transform: translateY(-11px) rotate(-45deg); /* Rotate the bottom line to form an X */
-  }
+	.line.bottom.active {
+		transform: translateY(-11px) rotate(-45deg); /* Rotate the bottom line to form an X */
+	}
 
 	.slideout-menu {
 		box-sizing: border-box;
@@ -245,15 +246,18 @@
 		text-align: center;
 		background-image: linear-gradient(
 			to top,
-			var(--color-theme-1) 50%, /* Solid color (e.g., blue) for the bottom 80% */
-			75%,
+			var(--color-theme-1) 50%,
+			/* Solid color (e.g., blue) for the bottom 80% */ 75%,
 			var(--color-theme-3) 100%
-
 		);
 	}
 
-	.slideout-menu h1 {
-		color: var(--color-theme-2);
+	/* Optional styles for the terminal container */
+	.terminal {
+		width: 80%; /* Adjust the width of the terminal */
+		max-width: 800px; /* Set a maximum width for larger screens */
+		left: 50%;
+		position: relative;
+		transform: translateX(-50%);
 	}
-
 </style>

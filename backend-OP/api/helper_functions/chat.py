@@ -2,7 +2,6 @@ from typing import List, Dict
 import openai 
 import os 
 import pinecone 
-#rom .create_embeddings import get_openai_embeddings #remove the period if running as standalone script
 
 api_key = os.getenv("PINECONE_API_KEY")
 environment = os.getenv("PINECONE_API_ENV")
@@ -31,7 +30,7 @@ each question. If the information can not be found in the information
 provided by the user you truthfully say "I don't know".
 """
 
-def chat_over_docs(query: str, document: str, history: List[Dict[str, str]] = []):
+def chat_over_docs(query: str, document: str, history: List[Dict[str, str]] = []) -> List[Dict[str, str]]:
     if len(history) == 0:
         history.append({"role": "system", "content": primer})
     #embed the query

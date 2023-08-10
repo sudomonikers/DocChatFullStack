@@ -91,7 +91,7 @@
 
     function handleKeyDown(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
-        sendMessage();
+        	sendMessage();
         }
     }
 </script>
