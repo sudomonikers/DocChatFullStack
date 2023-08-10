@@ -1,11 +1,16 @@
 <script>
 	import { BASE_API } from '$lib/environment';
+	import { afterUpdate } from 'svelte';
 
 	let prompt = 'UI-Control@Help ~ %';
 	let currentCommand = '';
 	let commandHistory = [];
 	let inputElement;
 	let messageInFlight = false;
+
+	afterUpdate(() => {
+		scrollTerminalToBottom();
+	});
 
 	function handleInput(event) {
 		if (event.key === 'Enter') {
@@ -17,9 +22,9 @@
 
 	function scrollTerminalToBottom() {
 		const terminalContent = document.querySelector('.terminal-content');
-		console.log(terminalContent.scrollHeight, terminalContent.scrollTop)
+		console.log(terminalContent.scrollHeight, terminalContent.scrollTop);
 		terminalContent.scrollTop = terminalContent.scrollHeight;
-		console.log(terminalContent.scrollHeight, terminalContent.scrollTop)
+		console.log(terminalContent.scrollHeight, terminalContent.scrollTop);
 	}
 
 	function keyboardInteraction(event) {
@@ -62,7 +67,6 @@
 				}
 			}
 			const parsedResult = JSON.parse(result);
-			console.log(parsedResult);
 			if (parsedResult.response === 'wowTheUser') {
 				wowTheUser();
 				commandHistory[commandHistory.length - 1].response = 'Haha get rickrolled!';
@@ -72,7 +76,6 @@
 			commandHistory = commandHistory;
 
 			scrollTerminalToBottom();
-			console.log(commandHistory);
 
 			messageInFlight = false;
 		} catch (error) {
@@ -133,11 +136,24 @@
 
 	<div class="terminal-content" role="textbox" tabindex="0" on:keydown={handleInput}>
 		<div class="command-line">
-			<span class="prompt">{prompt}&nbsp;</span><span>Greetings. This terminal is meant to do a couple things. (Also note it has no memory of the conversation, unlike the chatbot in the 'chat' page)</span>
+			<span class="prompt">{prompt}&nbsp;</span><span
+				>Greetings. This terminal is meant to do a couple things. (Also note it has no memory of the
+				conversation, unlike the chatbot in the 'chat' page)</span
+			>
 			<ol>
 				<li>Tell you how to interact and use this website if you have questions.</li>
-				<li>Showcase the power and potential of AI powered function calls. Try asking the terminal to do a basic math equation. Something with two numbers and basic arithmetic like adding, subtracting, multiplying, or dividing. The AI will get it right every single time because it has been given a 'logic' center in the form of a code library to call. Fleshing out code libraries for AI's to call solves the problem of hallucination, and is the future of how humans and machines will interact.</li>
-				<li>Show how AI can be used to do things alongside the user on the UI. Try asking it to show you a video.</li>
+				<li>
+					Showcase the power and potential of AI powered function calls. Try asking the terminal to
+					do a basic math equation. Something with two numbers and basic arithmetic like adding,
+					subtracting, multiplying, or dividing. The AI will get it right every single time because
+					it has been given a 'logic' center in the form of a code library to call. Fleshing out
+					code libraries for AI's to call solves the problem of hallucination, and is the future of
+					how humans and machines will interact.
+				</li>
+				<li>
+					Show how AI can be used to do things alongside the user on the UI. Try asking it to show
+					you a video.
+				</li>
 			</ol>
 			{#each commandHistory as command, index}
 				<span class="prompt">{prompt}&nbsp;</span>
@@ -197,6 +213,10 @@
 	.prompt {
 		color: lime;
 		margin-right: 4px;
+	}
+
+	.response {
+		width: 100%;
 	}
 
 	.command-text {
