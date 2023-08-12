@@ -89,11 +89,11 @@
 		}
 	}
 
-    function handleKeyDown(event) {
-        if (event.key === 'Enter' && !event.shiftKey) {
-        	sendMessage();
-        }
-    }
+	function handleKeyDown(event) {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			sendMessage();
+		}
+	}
 </script>
 
 <h1>Chatting With <button class="download-button" on:click={getFile}>{data.file}</button></h1>
@@ -101,8 +101,8 @@
 	<div class="message-box">
 		{#each messages as message}
 			<div class="message">
-				<span class="{message.role}">{message.role}</span>
-				<span class="{message.role}">{message.content}</span>
+				<span class={message.role}>{message.role}</span>
+				<span class={message.role}>{message.content}</span>
 			</div>
 			<hr />
 		{/each}
@@ -119,7 +119,7 @@
 			placeholder="Type your message..."
 			rows="3"
 			on:input={adjustTextareaRows}
-            on:keydown={handleKeyDown}
+			on:keydown={handleKeyDown}
 		/>
 		<button disabled={messageInFlight} class="send-button" on:click={sendMessage}>Send</button>
 	</div>
@@ -156,8 +156,8 @@
 		width: 100%;
 		left: 10%;
 		box-sizing: border-box;
-        height: auto;
-        min-height: 90vh;
+		height: auto;
+		min-height: 90vh;
 	}
 
 	.message {
@@ -165,13 +165,13 @@
 		align-items: center;
 	}
 
-    .assistant {
-        color: var(--color-theme-3);
-    }
+	.assistant {
+		color: var(--color-theme-3);
+	}
 
-    .user {
-        color: var(--color-theme-2);
-    }
+	.user {
+		color: var(--color-theme-2);
+	}
 
 	.message span:first-child {
 		flex-basis: 10%; /* Set the first span to take up 10% of the space */
@@ -223,12 +223,12 @@
 		border: 2px solid var(--color-theme-3);
 		border-radius: 4px;
 		cursor: pointer;
-        transition: 700ms;
+		transition: 700ms;
 	}
 
-    .send-button:hover {
-        background-color: var(--color-theme-2);
-    }
+	.send-button:hover {
+		background-color: var(--color-theme-2);
+	}
 
 	@keyframes changeLetter {
 		0% {

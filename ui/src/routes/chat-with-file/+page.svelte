@@ -53,14 +53,14 @@
 	input {
 		color: var(--color-theme-2);
 		border: 2px solid var(--color-theme-3);
-        transition: 500ms;
+		transition: 500ms;
 		padding: 10px;
-        color: var(--color-theme-1);
+		color: var(--color-theme-1);
 	}
 
 	input:focus {
 		outline: none;
-        border: 4px solid var(--color-theme-3);
+		border: 4px solid var(--color-theme-3);
 	}
 
 	a {

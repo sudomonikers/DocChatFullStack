@@ -41,11 +41,8 @@
 			{#each selectedFiles as file}
 				<span>{file.name}</span>
 			{/each}
-			<button 
-				class="button" 
-				on:click={uploadFiles} 
-				disabled={selectedFiles.length === 0}>
-			Upload
+			<button class="button" on:click={uploadFiles} disabled={selectedFiles.length === 0}>
+				Upload
 			</button>
 		</div>
 	</div>

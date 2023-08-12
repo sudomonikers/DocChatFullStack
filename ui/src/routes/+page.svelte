@@ -14,11 +14,14 @@
 		This is a developmental preview site to show the capabilities of using Retrieval Augmented
 		Generation (RAG) to understand and query documents. You can click the <a href="/upload"
 			>Upload</a
-		> button to upload any type of file. It will then be sent to an api that processes and vectorizes
-		that document. Once your document is uploaded, you can click the <a href="/chat">Chat</a> nav element to choose a document to interact with. There you will be taken to a chat screen where
-		you can chat with a LLM specifically about that document. Try it now to see the power! If you have
-		any questions on how to use this site, or why it could be useful, try interacting with the 'terminal'
-		by clicking the hamburger menu in the top left corner. It has been designed specifically to inform users of how to use this site.
+		>
+		button to upload any type of file. It will then be sent to an api that processes and vectorizes
+		that document. Once your document is uploaded, you can click the <a href="/chat">Chat</a> nav element
+		to choose a document to interact with. There you will be taken to a chat screen where you can chat
+		with a LLM specifically about that document. Try it now to see the power! If you have any questions
+		on how to use this site, or why it could be useful, try interacting with the 'terminal' by clicking
+		the hamburger menu in the top left corner. It has been designed specifically to inform users of how
+		to use this site.
 	</p>
 	<br />
 	<p>

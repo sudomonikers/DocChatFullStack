@@ -37,7 +37,7 @@
 	</div>
 {/if}
 
-<div class="loading-content" class:loading={loading}>
+<div class="loading-content" class:loading>
 	<slot />
 </div>
 
@@ -45,9 +45,9 @@
 	h1 {
 		color: var(--color-theme-2);
 		position: absolute;
-        left:50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
 	}
 	.loading-overlay {
 		position: fixed;
@@ -68,9 +68,9 @@
 	}
 
 	.loading-spinner {
-        position: absolute;
-        left: calc(50% - 24px);
-        top: calc(50% - 75px);
+		position: absolute;
+		left: calc(50% - 24px);
+		top: calc(50% - 75px);
 		border: 4px solid rgba(255, 255, 255, 0.3);
 		border-top: 4px solid #fff;
 		border-radius: 50%;
