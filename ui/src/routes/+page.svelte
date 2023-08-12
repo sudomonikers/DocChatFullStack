@@ -1,4 +1,6 @@
 <script>
+	export const prerender = false;
+	export const ssr = false;
 </script>
 
 <svelte:head>

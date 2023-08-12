@@ -26,3 +26,6 @@ OP-backend/api/temp_files/**/*
 #infrastructure things
 infrastructure/.terraform
 infrastructure/.terraform.lock.hcl
+infrastructure/terraform.tfstate
+infrastructure/terraform.tfstate.backup
+infrastructure/.terraform.tfstate.lock.info

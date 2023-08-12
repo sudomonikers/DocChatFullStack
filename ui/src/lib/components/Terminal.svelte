@@ -22,9 +22,7 @@
 
 	function scrollTerminalToBottom() {
 		const terminalContent = document.querySelector('.terminal-content');
-		console.log(terminalContent.scrollHeight, terminalContent.scrollTop);
 		terminalContent.scrollTop = terminalContent.scrollHeight;
-		console.log(terminalContent.scrollHeight, terminalContent.scrollTop);
 	}
 
 	function keyboardInteraction(event) {
