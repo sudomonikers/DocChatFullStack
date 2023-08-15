@@ -4,27 +4,19 @@ resource "aws_api_gateway_rest_api" "api" {
 }
 
 resource "aws_api_gateway_resource" "resource" {
-  path_part   = "resource"
-  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
   rest_api_id = aws_api_gateway_rest_api.api.id
+  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
+  path_part   = "{proxy+}"
 }
-
-# resource "aws_api_gateway_method" "method" {
-#   rest_api_id   = aws_api_gateway_rest_api.api.id
-#   resource_id   = aws_api_gateway_resource.resource.id
-#   http_method   = "ANY"
-#   authorization = "NONE"
-#   request_parameters = {
-#     "method.request.path.proxy" = true
-#   }
-# }
 resource "aws_api_gateway_method" "method" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   resource_id   = aws_api_gateway_resource.resource.id
-  http_method   = "GET"
+  http_method   = "ANY"
   authorization = "NONE"
+  request_parameters = {
+    "method.request.path.proxy" = true
+  }
 }
-
 resource "aws_api_gateway_integration" "integration" {
   rest_api_id             = aws_api_gateway_rest_api.api.id
   resource_id             = aws_api_gateway_resource.resource.id
@@ -33,9 +25,9 @@ resource "aws_api_gateway_integration" "integration" {
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.chat_with_docs_rest_api_function.invoke_arn
 
-  # request_parameters = {
-  #   "integration.request.path.proxy" = "method.request.path.proxy"
-  # }
+  request_parameters = {
+    "integration.request.path.proxy" = "method.request.path.proxy"
+  }
 }
 
 resource "aws_lambda_permission" "apigw_lambda" {
@@ -61,7 +53,6 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "role" {
-  name               = "assume-role"
+  name               = "invoke-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
-

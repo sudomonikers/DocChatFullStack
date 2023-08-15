@@ -10,19 +10,10 @@ ui/vite.config.js.timestamp-*
 ui/vite.config.ts.timestamp-*
 ui/src/node_modules
 
-ui2/.DS_Store
-ui2/node_modules
-ui2/build
-ui2/.svelte-kit
-ui2/package
-ui2/vite.config.js.timestamp-*
-ui2/vite.config.ts.timestamp-*
-ui2/src/node_modules
-
 #backend things
 backend/api/temp_files/**/*
-OP-backend/api/temp_files/**/*
-OP-backend/api/pip_modules
+backend-OP/api/temp_files/**/*
+backend-OP/dist
 
 #infrastructure things
 infrastructure/.terraform

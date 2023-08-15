@@ -3,4 +3,6 @@ fastapi
 sentence-transformers
 pinecone-client
 boto3
-numpy
+openai
+mangum
+contextlib2
