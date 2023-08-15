@@ -3,3 +3,4 @@ fastapi
 sentence-transformers
 pinecone-client
 boto3
+numpy

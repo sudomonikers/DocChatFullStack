@@ -7,7 +7,9 @@ provider "aws" {
 }
 
 locals {
-  region         = "us-east-2"
-  bucket_name    = "chat-with-docs-ui-bucket"
-  storage_bucket = "chat-with-docs-storage-bucket"
+  region             = "us-east-2"
+  bucket_name        = "chat-with-docs-ui-bucket"
+  storage_bucket     = "chat-with-docs-storage-bucket"
+  lambda_s3_artifact = "chat-with-docs-lambda-s3-artifact"
+  stack_name         = "backend-OP" #change this to whichever directory you are using, OP or local hosted
 }
