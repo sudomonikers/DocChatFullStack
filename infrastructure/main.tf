@@ -6,10 +6,14 @@ provider "aws" {
   skip_requesting_account_id  = true
 }
 
+data "aws_caller_identity" "current" {}
+
 locals {
   region             = "us-east-2"
   bucket_name        = "chat-with-docs-ui-bucket"
   storage_bucket     = "chat-with-docs-storage-bucket"
   lambda_s3_artifact = "chat-with-docs-lambda-s3-artifact"
   stack_name         = "backend-OP" #change this to whichever directory you are using, OP or local hosted
+  account_id         = data.aws_caller_identity.current.account_id
+
 }

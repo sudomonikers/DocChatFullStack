@@ -36,7 +36,7 @@ resource "aws_lambda_permission" "apigw_lambda" {
   function_name = aws_lambda_function.chat_with_docs_rest_api_function.function_name
   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_api_gateway_rest_api.api.execution_arn}/*/*/*"
+  source_arn = "arn:aws:execute-api:${local.region}:${local.account_id}:${aws_api_gateway_rest_api.api.id}/*/*/*"
 }
 
 data "aws_iam_policy_document" "assume_role" {
