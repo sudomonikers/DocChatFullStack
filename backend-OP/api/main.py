@@ -3,8 +3,6 @@ from mangum import Mangum
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
-from dotenv import load_dotenv
-load_dotenv()
 
 from router import router as api_router
 
