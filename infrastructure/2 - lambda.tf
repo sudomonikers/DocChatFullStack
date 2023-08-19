@@ -40,7 +40,15 @@ resource "aws_lambda_function" "chat_with_docs_rest_api_function" {
   }
   environment {
     variables = {
-      # Environment variables, if needed
+      OPENAI_API_KEY=local.OPENAI_API_KEY
+      PINECONE_API_KEY=local.PINECONE_API_KEY 
+      PINECONE_API_ENV=local.PINECONE_API_ENV
+      PINECONE_INDEX_NAME=local.PINECONE_INDEX_NAME
+      PINECONE_VECTOR_DIMENSIONALITY=local.PINECONE_VECTOR_DIMENSIONALITY
+      EMBEDDING_MODEL=local.EMBEDDING_MODEL
+      PINECONE_DOCS_NAMESPACE=local.PINECONE_DOCS_NAMESPACE
+      PINECONE_TITLES_NAMESPACE=local.PINECONE_TITLES_NAMESPACE
+      S3_BUCKET=local.S3_BUCKET
     }
   }
 }
