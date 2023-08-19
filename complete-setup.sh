@@ -35,7 +35,7 @@ docker push $ECRrepositoryUri:latest
 docker rmi docker-image:$VERSION
 docker rmi $ECRrepositoryUri:latest
 osascript -e 'quit app "Docker"'
-aws lambda update-function-code --function-name $FUNCTION_NAME --image-uri $ECRrepositoryUri:latest
+aws lambda update-function-code --function-name $FUNCTION_NAME --image-uri $ECRrepositoryUri:latest --output text
 
 #apply the terraform infrastructure
 cd ../infrastructure
