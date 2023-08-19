@@ -1,4 +1,5 @@
 .env
+.DS_Store
 
 #ui things
 ui/.DS_Store
@@ -13,7 +14,7 @@ ui/src/node_modules
 #backend things
 backend/api/temp_files/**/*
 backend-OP/api/temp_files/**/*
-backend-OP/dist
+backend-OP/lib
 
 #infrastructure things
 infrastructure/.terraform

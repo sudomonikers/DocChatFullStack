@@ -1,8 +1,8 @@
 textract 
 fastapi 
-sentence-transformers
-pinecone-client
 boto3
-openai
 mangum
 contextlib2
+
+openai
+pinecone-client

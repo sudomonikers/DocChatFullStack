@@ -1,18 +1,3 @@
-
-resource "aws_s3_bucket" "lambda_bucket" {
-  bucket        = local.lambda_s3_artifact
-  force_destroy = true
-}
-
-resource "aws_s3_bucket_public_access_block" "lambda_bucket" {
-  bucket = aws_s3_bucket.lambda_bucket.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
 resource "aws_iam_role" "chat_with_docs_rest_api" {
   name = "chat-with-docs-rest-api-policy"
 
@@ -37,38 +22,31 @@ resource "aws_iam_role_policy_attachment" "chat_with_docs_rest_api_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_ecr_repository" "lambda_ecr_repo" {
+  name = "lambda-docker-repo"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
 resource "aws_lambda_function" "chat_with_docs_rest_api_function" {
   function_name = "chat-with-docs-rest-api"
-
-  s3_bucket = aws_s3_bucket.lambda_bucket.id
-  s3_key    = aws_s3_object.lambda_chat_with_docs.key
-
-  runtime = "python3.11"
-  handler = "api.main.handler"
-
-  source_code_hash = data.archive_file.lambda_chat_with_docs.output_base64sha256
-
+  image_uri = "${aws_ecr_repository.lambda_ecr_repo.repository_url}:latest"
+  package_type = "Image"
   role = aws_iam_role.chat_with_docs_rest_api.arn
+  depends_on = [aws_ecr_repository.lambda_ecr_repo]
+  tracing_config {
+    mode = "Active"
+  }
+  environment {
+    variables = {
+      # Environment variables, if needed
+    }
+  }
 }
 
 resource "aws_cloudwatch_log_group" "chat_with_docs" {
   name = "/aws/lambda/${aws_lambda_function.chat_with_docs_rest_api_function.function_name}"
 
   retention_in_days = 14
-}
-
-data "archive_file" "lambda_chat_with_docs" {
-  type = "zip"
-
-  source_dir  = "../${path.module}/${local.stack_name}"
-  output_path = "../${path.module}/lambda.zip"
-}
-
-resource "aws_s3_object" "lambda_chat_with_docs" {
-  bucket = aws_s3_bucket.lambda_bucket.id
-
-  key    = "lambda.zip"
-  source = data.archive_file.lambda_chat_with_docs.output_path
-
-  etag = filemd5(data.archive_file.lambda_chat_with_docs.output_path)
 }
