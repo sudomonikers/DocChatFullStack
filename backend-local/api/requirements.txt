@@ -1,5 +1,0 @@
-textract 
-fastapi 
-sentence-transformers
-pinecone-client
-boto3

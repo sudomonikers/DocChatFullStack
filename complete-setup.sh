@@ -16,7 +16,11 @@ cd ./infrastructure
 terraform init
 terraform apply -target=aws_ecr_repository.lambda_ecr_repo -auto-approve
 
-
+#kubernetes
+aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)
+helm repo add qdrant https://qdrant.to/helm
+helm install qdrant-release qdrant/qdrant
+helm install qdrant-database qdrant/qdrant --set "service.type=LoadBalancer"
 
 #now push things to those created resources
 cd ../${BACKEND_DIRECTORY}
@@ -35,10 +39,12 @@ docker push $ECRrepositoryUri:latest
 docker rmi docker-image:$VERSION
 docker rmi $ECRrepositoryUri:latest
 osascript -e 'quit app "Docker"'
-aws lambda update-function-code --function-name $FUNCTION_NAME --image-uri $ECRrepositoryUri:latest --output text
+
 
 #apply the terraform infrastructure
 cd ../infrastructure
 terraform init
 terraform apply -auto-approve
 cd ../
+
+aws lambda update-function-code --function-name $FUNCTION_NAME --image-uri $ECRrepositoryUri:latest --output text

@@ -9,3 +9,6 @@ def download_file_from_s3(bucket_name: str, s3_file_key: str, local_file_path: s
     s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
     s3.download_file(Bucket=bucket_name, Key=s3_file_key, Filename=local_file_path)
 
+if __name__ == "__main__":
+    #example usage
+    download_file_from_s3(os.getenv("S3_BUCKET"), "test.pdf", "test.pdf")
