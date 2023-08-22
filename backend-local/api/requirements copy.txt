@@ -1,9 +1,0 @@
-textract 
-fastapi 
-boto3
-mangum
-contextlib2
-python-multipart
-
-openai
-pinecone-client
