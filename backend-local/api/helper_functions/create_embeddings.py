@@ -1,16 +1,20 @@
-import openai
-import os 
 from typing import List
+from sentence_transformers import SentenceTransformer
 
-openai.api_key = os.getenv('OPENAI_API_KEY')
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-def get_openai_embeddings(sentences: List[str], model = "text-embedding-ada-002") -> List[List[float]]:
-    embeddings = []
-    response = openai.Embedding.create(model=model, input=sentences)
-    for data in response.data:
-        embeddings.append(data["embedding"])
-    return embeddings
+def get_embeddings(text: List[str]) -> List[List[float]]:
+    """
+    This function takes a list of strings and returns a list of lists of floats.
+    Each list of floats is a 384-dimensional vector representing the embedding of the corresponding string.
+    """
+    vectors = []
+    for chunk in text:
+        vectors.append(model.encode(chunk))
+    return vectors
+
 
 if __name__ == "__main__":
     #example usage
-    print(get_openai_embeddings(["What is the best way to get a job at OpenAI?"]))
+    sentences = ["This is an example sentence", "Each sentence is converted"]
+    print(get_embeddings(sentences))

@@ -1,65 +1,44 @@
-import pinecone
-import os 
+import os
 from typing import List
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams, Filter, FieldCondition, Range, PointStruct
+import uuid
 
-api_key = os.getenv("PINECONE_API_KEY")
-environment = os.getenv("PINECONE_API_ENV")
-index_name = os.getenv("PINECONE_INDEX_NAME")
-vector_dimensionality = int(os.getenv("PINECONE_VECTOR_DIMENSIONALITY"))
+vector_db_endpoint = os.getenv("QDRANT_ENDPOINT")
+qdrant_port = os.getenv("QDRANT_PORT")
+index_name = os.getenv("QDRANT_INDEX_NAME")
 
-pinecone.init(api_key=api_key, environment=environment)
+client = QdrantClient(url=vector_db_endpoint, port=qdrant_port)
 
-hasIndex = pinecone.list_indexes()
-if not hasIndex:
-    pinecone.create_index(index_name, dimension=vector_dimensionality, metric="cosine", pod_type="p1")
-elif hasIndex[0] != index_name:
-    pinecone.delete_index(hasIndex[0])
-    pinecone.create_index(index_name, dimension=vector_dimensionality, metric="cosine", pod_type="p1")
-
-index = pinecone.Index(index_name)
-
-
-def format_vectors(vectors: List[List[float]], split_text: List[str], doc_title: str, batch_size: int)-> List[List]:
-    formatted_vectors = []
-    current_batch = []
-    
-    for i, vector in enumerate(vectors):
-        formatted_vector = (f'{i}-{doc_title}', vector, {"doc_title": doc_title, "text": split_text[i]})
-        current_batch.append(formatted_vector)
-
-        if len(current_batch) == batch_size:
-            formatted_vectors.append(current_batch)
-            current_batch = []
-
-    # Add any remaining vectors to the last batch
-    if current_batch:
-        formatted_vectors.append(current_batch)
-
-    return formatted_vectors
 
 def upsert_vectors(vectors: List[List[float]], split_text: List[str], doc_title: str) -> bool:
-    formatted_vectors_batches = format_vectors(vectors, split_text, doc_title, 100)
     success = True
+    formatted_vectors = get_formatted_vectors(vectors, split_text, doc_title)
     
-    #insert the doc title into another namespace
-    title_vector = get_openai_embeddings([doc_title])
-    formatted_title_vector = format_vectors(title_vector, [doc_title], doc_title, 1)[0]
-    index.upsert(vectors=formatted_title_vector, namespace=os.getenv("PINECONE_TITLES_NAMESPACE"))
-    
-    for batch_vectors in formatted_vectors_batches:
-        upsert_response = index.upsert(
-            vectors=batch_vectors,
-            namespace=os.getenv("PINECONE_DOCS_NAMESPACE")
-        )
-        if not upsert_response.upserted_count > 0:
-            print(f"Error in batch: {upsert_response}")
-            success = False
+    response = client.upsert(
+        collection_name=index_name,
+        points=formatted_vectors
+    )
+
+    if not response.status == 'completed':
+        print(f"Error in upsert: {response}")
+        success = False
     return success
 
 
+def get_formatted_vectors(vectors: List[List[float]], split_text: List[str], doc_title: str) -> List[PointStruct]:
+    formatted_vectors = []
+    for i, vector in enumerate(vectors):
+        formatted_vector = PointStruct(
+            id=str(uuid.uuid4()),
+            vector=vector,
+            payload={"doc_title": doc_title, "text": split_text[i]}
+        )
+        formatted_vectors.append(formatted_vector)
+    return formatted_vectors
+
 if __name__ == "__main__":
-    from create_embeddings import get_openai_embeddings
-    #example usage
-    print(upsert_vectors([[1,2,3]], ["test"], "test"))
-else: 
-    from .create_embeddings import get_openai_embeddings
+    import numpy as np
+    vectors = np.random.rand(1, 384).tolist()
+    print(upsert_vectors(vectors, ["test"], "test"))
+

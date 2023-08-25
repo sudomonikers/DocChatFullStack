@@ -5,3 +5,5 @@ mangum
 contextlib2
 python-multipart
 requests
+sentence-transformers
+qdrant-client

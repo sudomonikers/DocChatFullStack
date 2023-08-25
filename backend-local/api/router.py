@@ -6,8 +6,8 @@ from typing import Optional, List, Dict
 from fastapi.responses import JSONResponse
 
 from helper_functions.save_file_to_disk import save_file_to_disk
-from helper_functions.create_embeddings import get_openai_embeddings
-from helper_functions.upsert_vector_to_db import upsert_vectors, index
+from helper_functions.create_embeddings import get_embeddings
+from helper_functions.upsert_vector_to_db import upsert_vectors
 from helper_functions.upload_to_s3 import upload_file_to_aws
 from helper_functions.get_file_from_s3 import download_file_from_s3
 from helper_functions.text_splitter import split_into_overlapping_chunks
@@ -24,12 +24,15 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
 
     for file in files:
         file_path = save_file_to_disk(file)
+        
         text = textract.process(file_path)
         decoded_text = text.decode("utf-8")
         split_text = split_into_overlapping_chunks(decoded_text)
-        embeddings = get_openai_embeddings(split_text)
+        embeddings = get_embeddings(split_text)
+        
         upsert_vectors(embeddings, split_text, file.filename)
         upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
+        
         os.remove(file_path)  # Clean up the temporary file
         responses.append({"message": f"Successfully processed the file {file.filename}"})
 
