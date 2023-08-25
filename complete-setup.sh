@@ -21,6 +21,16 @@ aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terr
 helm repo add qdrant https://qdrant.to/helm
 helm install qdrant-release qdrant/qdrant
 helm install qdrant-database qdrant/qdrant --set "service.type=LoadBalancer"
+#curl request to create a collection in qdrant db
+curl --location --request POST 'http://ae6b7a69dec704390bcccc683d8d927a-555827074.us-east-2.elb.amazonaws.com:6333/collections/documents?content-type=application/json' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "vectors": {
+    "size": 384,
+    "distance": "Cosine"
+  }
+}'
+
 
 #now push things to those created resources
 cd ../${BACKEND_DIRECTORY}
