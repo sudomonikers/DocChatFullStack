@@ -14,7 +14,7 @@ client = QdrantClient(url=vector_db_endpoint, port=qdrant_port)
 def upsert_vectors(vectors: List[List[float]], split_text: List[str], doc_title: str) -> bool:
     success = True
     formatted_vectors = get_formatted_vectors(vectors, split_text, doc_title)
-    
+
     response = client.upsert(
         collection_name=index_name,
         points=formatted_vectors
