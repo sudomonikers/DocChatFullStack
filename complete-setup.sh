@@ -30,6 +30,14 @@ curl --location --request POST 'http://ae6b7a69dec704390bcccc683d8d927a-55582707
     "distance": "Cosine"
   }
 }'
+curl --location --request POST 'http://ae6b7a69dec704390bcccc683d8d927a-555827074.us-east-2.elb.amazonaws.com:6333/collections/titles?content-type=application/json' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "vectors": {
+    "size": 384,
+    "distance": "Cosine"
+  }
+}'
 
 
 #now push things to those created resources

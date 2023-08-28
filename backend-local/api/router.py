@@ -14,6 +14,7 @@ from helper_functions.text_splitter import split_into_overlapping_chunks
 from helper_functions.chat import chat_over_docs
 from helper_functions.get_all_unique_document_titles import get_unique_document_titles
 from helper_functions.ui_controller import control_ui
+from helper_functions.upsert_title import upsert_title
 
 router = APIRouter()
 
@@ -31,6 +32,7 @@ async def create_upload_file(files: List[UploadFile] = File(...)):
         embeddings = get_embeddings(split_text)
         
         upsert_vectors(embeddings, split_text, file.filename)
+        upsert_title(file.filename)
         upload_file_to_aws(file_path, os.getenv("S3_BUCKET"), file.filename)
         
         os.remove(file_path)  # Clean up the temporary file
